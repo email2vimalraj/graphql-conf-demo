@@ -1,0 +1,9 @@
+type Gauge {
+  timestamp: Float
+  value: String
+}
+
+type Query {
+  getCPUBusy: Gauge!
+  getUsedRAMMemory: Gauge!
+}
