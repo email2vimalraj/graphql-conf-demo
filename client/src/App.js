@@ -1,11 +1,11 @@
 import React from 'react'
 
-import './App.css'
+// import './App.css'
 import GraphContainer from './GraphContainer'
 
 function App() {
   return (
-    <div className="App">
+    <div style={{ margin: '30px' }}>
       <GraphContainer />
     </div>
   )

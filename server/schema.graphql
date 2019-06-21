@@ -11,4 +11,6 @@ type Query {
 
 type Subscription {
   counter: Gauge!
+  usedRAMMemory: Gauge!
+  cpuBusy: Gauge!
 }

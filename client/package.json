@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "antd": "^3.19.6",
     "graphql": "^14.3.1",
     "react": "^16.8.6",
     "react-d3-speedometer": "^0.5.5",

@@ -27,3 +27,5 @@ docker-compose up -d
 ```
 
 Creates prometheus, node-exporter and grafana instances
+
+Check the local ip of the `node-prom-server` and update the `prometheus.yml` file with the recent ip. The `localhost` or `127.0.0.1` doesn't work.

@@ -68,6 +68,44 @@ const resolvers = {
     }
   },
   Subscription: {
+    cpuBusy: {
+      subscribe: (parent, args, { pubsub }) => {
+        const channel = Math.random()
+          .toString(36)
+          .substring(2, 15)
+        const queryParams = {
+          query: `(((count(count(node_cpu_seconds_total{instance=~"node-exporter:9100",job=~"node-exporter"}) by (cpu))) - avg(sum by (mode)(irate(node_cpu_seconds_total{mode='idle',instance=~"node-exporter:9100",job=~"node-exporter"}[5m])))) * 100) / count(count(node_cpu_seconds_total{instance=~"node-exporter:9100",job=~"node-exporter"}) by (cpu))`,
+          start: 'now-5m'
+        }
+        try {
+          setInterval(() => {
+            publishToChannel(pubsub, channel, 'cpuBusy', queryParams)
+          }, 3000)
+          return pubsub.asyncIterator(channel)
+        } catch (err) {
+          throw new Error(err)
+        }
+      }
+    },
+    usedRAMMemory: {
+      subscribe: (parent, args, { pubsub }) => {
+        const channel = Math.random()
+          .toString(36)
+          .substring(2, 15)
+        const queryParams = {
+          query: `((node_memory_MemTotal_bytes{instance=~"node-exporter:9100",job=~"node-exporter"} - node_memory_MemFree_bytes{instance=~"node-exporter:9100",job=~"node-exporter"}) / (node_memory_MemTotal_bytes{instance=~"node-exporter:9100",job=~"node-exporter"} )) * 100`,
+          start: 'now-5m'
+        }
+        try {
+          setInterval(() => {
+            publishToChannel(pubsub, channel, 'usedRAMMemory', queryParams)
+          }, 3000)
+          return pubsub.asyncIterator(channel)
+        } catch (err) {
+          throw new Error(err)
+        }
+      }
+    },
     counter: {
       subscribe: (parent, args, { pubsub }) => {
         const channel = Math.random()
