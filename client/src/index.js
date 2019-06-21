@@ -1,13 +1,27 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Provider, createClient } from 'urql'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
+import {
+  Provider,
+  createClient,
+  defaultExchanges,
+  subscriptionExchange
+} from 'urql'
 
 import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
+const subscriptionClient = new SubscriptionClient('ws://localhost:4000', {})
+
 const client = createClient({
-  url: 'http://localhost:4000'
+  url: 'http://localhost:4000',
+  exchanges: [
+    ...defaultExchanges,
+    subscriptionExchange({
+      forwardSubscription: operation => subscriptionClient.request(operation)
+    })
+  ]
 })
 
 ReactDOM.render(

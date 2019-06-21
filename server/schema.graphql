@@ -6,4 +6,9 @@ type Gauge {
 type Query {
   getCPUBusy: Gauge!
   getUsedRAMMemory: Gauge!
+  getTestCounter: Gauge!
+}
+
+type Subscription {
+  counter: Gauge!
 }

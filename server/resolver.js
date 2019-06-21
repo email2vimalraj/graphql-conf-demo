@@ -19,6 +19,16 @@ async function fetchFromPrometheus(queryParams) {
   }
 }
 
+async function publishToChannel(pubsub, channel, resource, queryParams) {
+  try {
+    const result = {}
+    result[resource] = await fetchFromPrometheus(queryParams)
+    pubsub.publish(channel, result)
+  } catch (err) {
+    throw new Error(err)
+  }
+}
+
 const resolvers = {
   Query: {
     getCPUBusy: async (root, args, context) => {
@@ -42,6 +52,39 @@ const resolvers = {
         return await fetchFromPrometheus(queryParams)
       } catch (err) {
         throw new Error(err)
+      }
+    },
+
+    getTestCounter: async (root, args, context) => {
+      const queryParams = {
+        query: `(test_counter{code="200"})`,
+        start: 'now-15m'
+      }
+      try {
+        return await fetchFromPrometheus(queryParams)
+      } catch (err) {
+        throw new Error(err)
+      }
+    }
+  },
+  Subscription: {
+    counter: {
+      subscribe: (parent, args, { pubsub }) => {
+        const channel = Math.random()
+          .toString(36)
+          .substring(2, 15)
+        const queryParams = {
+          query: `(test_counter{code="200"})`,
+          start: 'now-15m'
+        }
+        try {
+          setInterval(() => {
+            publishToChannel(pubsub, channel, 'counter', queryParams)
+          }, 3000)
+          return pubsub.asyncIterator(channel)
+        } catch (err) {
+          throw new Error(err)
+        }
       }
     }
   }
